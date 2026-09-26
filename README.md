@@ -28,11 +28,12 @@ Line-art label templates with a stretchy middle for your text: long cat, wiener 
 
 ## Demo
 
-[A demo is available here.](https://odensc.github.io/phomemo-d30-web-bluetooth/) Please use a Web Bluetooth-compatible browser (e.g. Chromium-based).
+[A demo is available here.](https://nemik.net/d30-designer/) Please use a Web Bluetooth-compatible browser (e.g. Chromium-based).
 
 ## Credits
 
 Inspiration for the data structure / image conversion was taken from some other great open-source projects. Thanks to:
 
+- https://github.com/odensc/phomemo-d30-web-bluetooth
 - https://github.com/WebBluetoothCG/demos
 - https://github.com/Knightro63/phomemo

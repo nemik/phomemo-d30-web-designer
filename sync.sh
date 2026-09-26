@@ -1,1 +1,0 @@
-rsync -avh * nemik.net:nemik-tmp/d30/
