@@ -79,8 +79,9 @@ const getPrintData = (canvas) => {
  * Given a Bluetooth characteristic and a canvas, sends the necessary data to print it.
  * @param {BluetoothRemoteGATTCharacteristic} characteristic
  * @param {HTMLCanvasElement} canvas
+ * @param {(sent: number, total: number) => void} [onProgress] called as data is sent
  */
-export const printCanvas = async (characteristic, canvas) => {
+export const printCanvas = async (characteristic, canvas, onProgress = () => {}) => {
 	const data = getPrintData(canvas);
 
 	await characteristic.writeValueWithResponse(
@@ -96,8 +97,10 @@ export const printCanvas = async (characteristic, canvas) => {
 		}
 
 		console.log(`Sent ${i}/${data.length} bytes`);
+		onProgress(i, data.length);
 	}
 
 	console.log(`Sent ${data.length}/${data.length} bytes (done)`);
 	await characteristic.writeValueWithResponse(END_DATA);
+	onProgress(data.length, data.length);
 };

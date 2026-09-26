@@ -468,6 +468,17 @@ const updateCanvasQRText = async (canvas) => {
 	image.src = qrImg;
 };
 
+const showSuccess = (message) => {
+	$("#successText").textContent = message;
+	bootstrap.Toast.getOrCreateInstance($("#successToast")).show();
+};
+
+const setPrintButton = (label, busy) => {
+	const button = $("#printButton");
+	button.disabled = busy;
+	button.textContent = label;
+};
+
 const handleError = (err) => {
 	console.error(err);
 
@@ -516,12 +527,17 @@ document.addEventListener("DOMContentLoaded", function () {
 
 	$("form").addEventListener("submit", (e) => {
 		e.preventDefault();
+		let device;
 		navigator.bluetooth
 			.requestDevice({
 				acceptAllDevices: true,
 				optionalServices: ["0000ff00-0000-1000-8000-00805f9b34fb"],
 			})
-			.then((device) => device.gatt.connect())
+			.then((d) => {
+				device = d;
+				setPrintButton("Connecting…", true);
+				return device.gatt.connect();
+			})
 			.then((server) => server.getPrimaryService("0000ff00-0000-1000-8000-00805f9b34fb"))
 			.then((service) => service.getCharacteristic("0000ff02-0000-1000-8000-00805f9b34fb"))
 			.then(async (char) => {
@@ -529,8 +545,15 @@ document.addEventListener("DOMContentLoaded", function () {
 				// awaited; the others draw in load callbacks after their promise resolves.
 				const tab = $("#nav-tab .nav-link.active").id;
 				if (tab === "nav-text-tab" || tab === "nav-cartoon-tab") await renderActiveTab();
-				return printCanvas(char, canvas);
+				setPrintButton("Printing… 0%", true);
+				await printCanvas(char, canvas, (sent, total) =>
+					setPrintButton(`Printing… ${Math.round((sent / total) * 100)}%`, true)
+				);
+				showSuccess(
+					`✅ Sent ${labelSize.width} × ${labelSize.height} mm label to ${device.name || "the printer"} — all data acknowledged`
+				);
 			})
-			.catch(handleError);
+			.catch(handleError)
+			.finally(() => setPrintButton("Connect & print", false));
 	});
 });
