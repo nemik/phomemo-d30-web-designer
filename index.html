@@ -14,10 +14,23 @@
 			referrerpolicy="no-referrer"
 		/>
 		<link rel="stylesheet" href="index.css" />
+		<script src="src/theme.js"></script>
 	</head>
 	<body>
 		<div class="container my-4">
-			<h1>Phomemo D30 Web Bluetooth</h1>
+			<div class="d-flex flex-wrap justify-content-between align-items-center gap-2 mb-2">
+				<h1 class="mb-0">Phomemo D30 Web Bluetooth</h1>
+				<div class="btn-group btn-group-sm" role="group" aria-label="Theme">
+					<input type="radio" class="btn-check" name="theme" id="themeLight" value="light" />
+					<label class="btn btn-outline-secondary" for="themeLight" title="Light theme">☀️ Light</label>
+					<input type="radio" class="btn-check" name="theme" id="themeAuto" value="auto" checked />
+					<label class="btn btn-outline-secondary" for="themeAuto" title="Follow system setting"
+						>🖥️ Auto</label
+					>
+					<input type="radio" class="btn-check" name="theme" id="themeDark" value="dark" />
+					<label class="btn btn-outline-secondary" for="themeDark" title="Dark theme">🌙 Dark</label>
+				</div>
+			</div>
 			<nav class="mb-3">
 				<div class="nav nav-tabs" id="nav-tab" role="tablist">
 					<button
@@ -139,7 +152,7 @@
 									>Black &amp; white emoji (prints cleaner than colour)</label
 								>
 							</div>
-							<emoji-picker class="light" id="emojiPicker"></emoji-picker>
+							<emoji-picker id="emojiPicker"></emoji-picker>
 						</div>
 
 						<div class="collapse mb-2" id="timestampPanel">
@@ -502,6 +515,12 @@
 				</div>
 
 				<button type="submit" class="btn btn-primary" id="printButton">Connect &amp; print</button>
+				<div class="form-check mt-2">
+					<input class="form-check-input" type="checkbox" id="inputShowAllDevices" />
+					<label class="form-check-label small text-body-secondary" for="inputShowAllDevices"
+						>Show all Bluetooth devices (if your printer isn't listed)</label
+					>
+				</div>
 			</form>
 		</div>
 

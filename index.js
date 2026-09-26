@@ -530,7 +530,10 @@ document.addEventListener("DOMContentLoaded", function () {
 		let device;
 		navigator.bluetooth
 			.requestDevice({
-				acceptAllDevices: true,
+				// Only list D30 printers, unless the user opts to see everything
+				...($("#inputShowAllDevices").checked
+					? { acceptAllDevices: true }
+					: { filters: [{ namePrefix: "D30" }] }),
 				optionalServices: ["0000ff00-0000-1000-8000-00805f9b34fb"],
 			})
 			.then((d) => {
