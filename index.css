@@ -1,3 +1,26 @@
 * {
 	box-sizing: border-box;
 }
+
+emoji-picker {
+	width: 100%;
+	--num-columns: 9;
+	--emoji-size: 1.5rem;
+}
+
+.timestamp-menu {
+	max-height: 60vh;
+	overflow-y: auto;
+}
+
+#previewWrap {
+	position: relative;
+}
+
+#previewWrap canvas {
+	position: absolute;
+	top: 0;
+	left: 0;
+	transform-origin: top left;
+	image-rendering: pixelated;
+}

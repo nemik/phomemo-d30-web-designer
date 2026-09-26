@@ -34,6 +34,18 @@
 					</button>
 					<button
 						class="nav-link"
+						id="nav-cartoon-tab"
+						data-bs-toggle="tab"
+						data-bs-target="#nav-cartoon"
+						type="button"
+						role="tab"
+						aria-controls="nav-cartoon"
+						aria-selected="false"
+					>
+						Cartoons
+					</button>
+					<button
+						class="nav-link"
 						id="nav-barcode-tab"
 						data-bs-toggle="tab"
 						data-bs-target="#nav-barcode"
@@ -92,22 +104,296 @@
 						tabindex="0"
 					>
 						<h2>Text</h2>
-						<label for="inputFontSize" class="form-label">Font size</label>
-						<div class="input-group mb-2">
-							<input
-								type="number"
-								step="1"
-								min="1"
-								value="48"
-								size="10"
-								class="form-control flex-grow-0"
-								style="width: 4rem"
-								id="inputFontSize"
-							/>
-							<span class="input-group-text">px</span>
-						</div>
 						<label for="inputText" class="form-label">Text to print</label>
-						<textarea class="form-control" id="inputText">Hello world</textarea>
+						<textarea class="form-control mb-2" id="inputText" rows="3">Hello world</textarea>
+
+						<div class="d-flex flex-wrap gap-2 mb-2">
+							<button
+								type="button"
+								class="btn btn-outline-secondary btn-sm"
+								data-bs-toggle="collapse"
+								data-bs-target="#emojiPanel"
+								aria-expanded="false"
+								aria-controls="emojiPanel"
+							>
+								😀 Emoji
+							</button>
+							<div class="dropdown">
+								<button
+									type="button"
+									class="btn btn-outline-secondary btn-sm dropdown-toggle"
+									data-bs-toggle="dropdown"
+									aria-expanded="false"
+									id="timestampMenuButton"
+								>
+									🕒 Timestamp
+								</button>
+								<ul class="dropdown-menu timestamp-menu" id="timestampMenu"></ul>
+							</div>
+						</div>
+
+						<div class="collapse mb-2" id="emojiPanel">
+							<div class="form-check form-switch mb-1">
+								<input class="form-check-input" type="checkbox" id="inputEmojiMono" checked />
+								<label class="form-check-label" for="inputEmojiMono"
+									>Black &amp; white emoji (prints cleaner than colour)</label
+								>
+							</div>
+							<emoji-picker class="light" id="emojiPicker"></emoji-picker>
+						</div>
+
+						<div class="collapse mb-2" id="timestampPanel">
+							<div class="card card-body py-2 small">
+								<p class="mb-2">
+									Timestamps are placeholders like <code>{date}</code> and are filled in when you
+									print. Custom formats: <code>{t:ddd D MMM HH:mm}</code> (tokens
+									<code>YYYY YY MMMM MMM MM M dddd ddd DDDD DD D HH H hh h mm ss A a WW Q X</code>,
+									<code>[literal text]</code>).
+								</p>
+								<div class="row g-2">
+									<div class="col-sm-7">
+										<label for="inputTimestampBase" class="form-label mb-0">Date/time</label>
+										<div class="input-group input-group-sm">
+											<input type="datetime-local" class="form-control" id="inputTimestampBase" />
+											<button class="btn btn-outline-secondary" type="button" id="timestampNow">
+												Now
+											</button>
+										</div>
+										<div class="form-text mt-0">Leave empty to use the current time.</div>
+									</div>
+									<div class="col-sm-5">
+										<label for="inputTimestampOffset" class="form-label mb-0">Offset</label>
+										<div class="input-group input-group-sm">
+											<span class="input-group-text">+</span>
+											<input
+												type="number"
+												step="1"
+												value="0"
+												class="form-control"
+												id="inputTimestampOffset"
+											/>
+											<span class="input-group-text">days</span>
+										</div>
+										<div class="form-text mt-0">e.g. +3 for a "use by" date.</div>
+									</div>
+								</div>
+							</div>
+						</div>
+
+						<div class="row g-2 mb-2">
+							<div class="col-sm-8">
+								<label for="inputFont" class="form-label mb-0">Font</label>
+								<div class="input-group">
+									<button
+										class="btn btn-outline-secondary"
+										type="button"
+										id="fontPrev"
+										title="Previous font"
+									>
+										‹
+									</button>
+									<select class="form-select" id="inputFont"></select>
+									<button
+										class="btn btn-outline-secondary"
+										type="button"
+										id="fontNext"
+										title="Next font"
+									>
+										›
+									</button>
+									<button
+										class="btn btn-outline-secondary"
+										type="button"
+										id="fontRandom"
+										title="Random font"
+									>
+										🎲
+									</button>
+								</div>
+							</div>
+							<div class="col-sm-4">
+								<label for="inputFontSize" class="form-label mb-0">Font size</label>
+								<div class="input-group">
+									<input
+										type="number"
+										step="1"
+										min="1"
+										value="48"
+										class="form-control"
+										id="inputFontSize"
+									/>
+									<span class="input-group-text">px</span>
+								</div>
+							</div>
+							<div class="col-sm-8">
+								<label for="inputFancy" class="form-label mb-0">Unicode style</label>
+								<select class="form-select" id="inputFancy"></select>
+							</div>
+							<div class="col-sm-4">
+								<label for="inputLineHeight" class="form-label mb-0">Line spacing</label>
+								<input
+									type="number"
+									step="0.05"
+									min="0.5"
+									value="1.1"
+									class="form-control"
+									id="inputLineHeight"
+								/>
+							</div>
+						</div>
+
+						<div class="d-flex flex-wrap gap-2 mb-2">
+							<div class="btn-group btn-group-sm" role="group" aria-label="Font style">
+								<input type="checkbox" class="btn-check" id="inputBold" autocomplete="off" />
+								<label class="btn btn-outline-secondary fw-bold" for="inputBold">B</label>
+								<input type="checkbox" class="btn-check" id="inputItalic" autocomplete="off" />
+								<label class="btn btn-outline-secondary fst-italic" for="inputItalic">I</label>
+								<input type="checkbox" class="btn-check" id="inputInvert" autocomplete="off" />
+								<label class="btn btn-outline-secondary" for="inputInvert" title="White on black"
+									>Invert</label
+								>
+							</div>
+							<div class="btn-group btn-group-sm" role="group" aria-label="Horizontal alignment">
+								<input type="radio" class="btn-check" name="inputAlign" id="alignLeft" value="left" />
+								<label class="btn btn-outline-secondary" for="alignLeft">Left</label>
+								<input
+									type="radio"
+									class="btn-check"
+									name="inputAlign"
+									id="alignCenter"
+									value="center"
+									checked
+								/>
+								<label class="btn btn-outline-secondary" for="alignCenter">Center</label>
+								<input type="radio" class="btn-check" name="inputAlign" id="alignRight" value="right" />
+								<label class="btn btn-outline-secondary" for="alignRight">Right</label>
+							</div>
+							<div class="btn-group btn-group-sm" role="group" aria-label="Vertical alignment">
+								<input type="radio" class="btn-check" name="inputVAlign" id="vAlignTop" value="top" />
+								<label class="btn btn-outline-secondary" for="vAlignTop">Top</label>
+								<input
+									type="radio"
+									class="btn-check"
+									name="inputVAlign"
+									id="vAlignMiddle"
+									value="middle"
+									checked
+								/>
+								<label class="btn btn-outline-secondary" for="vAlignMiddle">Middle</label>
+								<input type="radio" class="btn-check" name="inputVAlign" id="vAlignBottom" value="bottom" />
+								<label class="btn btn-outline-secondary" for="vAlignBottom">Bottom</label>
+							</div>
+						</div>
+
+						<div class="row g-2 align-items-end">
+							<div class="col-sm-6">
+								<label for="inputMonoMode" class="form-label mb-0">Black &amp; white conversion</label>
+								<select class="form-select" id="inputMonoMode">
+									<option value="threshold" selected>Threshold (crisp text)</option>
+									<option value="dither">Dither (shades, colour emoji)</option>
+								</select>
+							</div>
+							<div class="col-sm-6">
+								<label for="inputThreshold" class="form-label mb-0">Darkness</label>
+								<input
+									type="range"
+									class="form-range"
+									min="20"
+									max="235"
+									value="128"
+									id="inputThreshold"
+								/>
+							</div>
+						</div>
+					</div>
+					<div
+						class="tab-pane"
+						id="nav-cartoon"
+						role="tabpanel"
+						aria-labelledby="nav-cartoon-tab"
+						tabindex="0"
+					>
+						<h2>Cartoons</h2>
+						<label for="inputCartoon" class="form-label mb-0">Template</label>
+						<select class="form-select mb-2" id="inputCartoon"></select>
+
+						<label for="inputCartoonText" class="form-label mb-0">Text</label>
+						<textarea class="form-control mb-2" id="inputCartoonText" rows="2">looooooong boi</textarea>
+
+						<div class="row g-2 mb-2">
+							<div class="col-sm-8">
+								<label for="inputCartoonFont" class="form-label mb-0">Font</label>
+								<div class="input-group">
+									<button class="btn btn-outline-secondary" type="button" id="cartoonFontPrev" title="Previous font">
+										‹
+									</button>
+									<select class="form-select" id="inputCartoonFont"></select>
+									<button class="btn btn-outline-secondary" type="button" id="cartoonFontNext" title="Next font">
+										›
+									</button>
+									<button class="btn btn-outline-secondary" type="button" id="cartoonFontRandom" title="Random font">
+										🎲
+									</button>
+								</div>
+							</div>
+							<div class="col-sm-4">
+								<label for="inputCartoonFontSize" class="form-label mb-0">Font size</label>
+								<div class="input-group">
+									<input
+										type="number"
+										step="1"
+										min="1"
+										value="28"
+										class="form-control"
+										id="inputCartoonFontSize"
+										disabled
+									/>
+									<span class="input-group-text">px</span>
+								</div>
+							</div>
+						</div>
+
+						<div class="form-check form-switch">
+							<input class="form-check-input" type="checkbox" id="inputCartoonAutoSize" checked />
+							<label class="form-check-label" for="inputCartoonAutoSize"
+								>Auto-size text to fill the space</label
+							>
+						</div>
+						<div class="form-check form-switch mb-2">
+							<input class="form-check-input" type="checkbox" id="inputCartoonStretch" />
+							<label class="form-check-label" for="inputCartoonStretch"
+								>Stretch label length to fit the text
+								<span class="text-body-secondary">(continuous rolls only)</span></label
+							>
+						</div>
+
+						<div class="d-flex flex-wrap gap-2 align-items-center mb-2">
+							<div class="btn-group btn-group-sm" role="group" aria-label="Style">
+								<input type="checkbox" class="btn-check" id="inputCartoonBold" autocomplete="off" />
+								<label class="btn btn-outline-secondary fw-bold" for="inputCartoonBold">B</label>
+								<input type="checkbox" class="btn-check" id="inputCartoonItalic" autocomplete="off" />
+								<label class="btn btn-outline-secondary fst-italic" for="inputCartoonItalic">I</label>
+								<input type="checkbox" class="btn-check" id="inputCartoonFlip" autocomplete="off" />
+								<label class="btn btn-outline-secondary" for="inputCartoonFlip" title="Face the other way"
+									>⇆ Flip</label
+								>
+								<input type="checkbox" class="btn-check" id="inputCartoonInvert" autocomplete="off" />
+								<label class="btn btn-outline-secondary" for="inputCartoonInvert">Invert</label>
+							</div>
+							<label for="inputCartoonLineWidth" class="form-label mb-0 ms-2 small">Line weight</label>
+							<input
+								type="range"
+								class="form-range w-auto flex-grow-1"
+								min="1"
+								max="8"
+								step="0.5"
+								value="3"
+								id="inputCartoonLineWidth"
+							/>
+						</div>
+						<div class="form-text mt-0">
+							Timestamp placeholders like <code>{date}</code> work here too.
+						</div>
 					</div>
 					<div
 						class="tab-pane"
@@ -199,11 +485,18 @@
 
 				<div class="d-flex flex-column align-items-start mb-3">
 					<h2>Preview</h2>
-					<p>Images are sent to printer vertically.</p>
+					<div class="form-check form-switch">
+						<input class="form-check-input" type="checkbox" id="inputPreviewHorizontal" checked />
+						<label class="form-check-label" for="inputPreviewHorizontal"
+							>Show as the label reads (images are sent to the printer vertically)</label
+						>
+					</div>
 
-					<div class="card shadow-sm">
+					<div class="card shadow-sm mw-100 overflow-auto">
 						<div class="card-body p-1">
-							<canvas id="canvas"></canvas>
+							<div id="previewWrap">
+								<canvas id="canvas"></canvas>
+							</div>
 						</div>
 					</div>
 				</div>
@@ -235,8 +528,8 @@
 		</div>
 
 		<script
-			src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.3/js/bootstrap.min.js"
-			integrity="sha512-ykZ1QQr0Jy/4ZkvKuqWn4iF3lqPZyij9iRv6sGqLRdTPkY69YX6+7wvVGmsdBbiIfN/8OdsI7HABjvEok6ZopQ=="
+			src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.3/js/bootstrap.bundle.min.js"
+			integrity="sha512-7Pi/otdlbbCR+LnW+F7PwFcSDJOuUJB3OxtEHbg4vSMvzvJjde4Po1v4BR9Gdc9aXNUNFVUY+SK51wWT8WF0Gg=="
 			crossorigin="anonymous"
 			referrerpolicy="no-referrer"
 			defer
