@@ -14,6 +14,8 @@ import {
 import { expandTimestamps, hasTimestamps, PRESETS } from "./src/timestamp.js";
 import { FANCY_STYLES, applyFancy } from "./src/fancy.js";
 import { toMonochrome } from "./src/mono.js";
+import { loadIcons } from "./src/icons.js";
+import { drawRichText, encodeIcons } from "./src/richtext.js";
 import { CARTOONS, drawCartoon, fitFontSize, measureTextBlock } from "./src/cartoons.js";
 
 const $ = document.querySelector.bind(document);
@@ -145,6 +147,7 @@ const setupCartoons = (canvas) => {
 };
 
 const fontsReady = injectFontStylesheet();
+const iconsReady = loadIcons();
 const COLOR_EMOJI_FONTS = '"Apple Color Emoji", "Segoe UI Emoji", "Noto Color Emoji"';
 
 // Incremented on every render so slow (font-loading) text renders don't draw over newer ones
@@ -167,8 +170,9 @@ const updateCanvasText = async (canvas) => {
 		return;
 	}
 
+	const icons = await iconsReady;
 	const text = applyFancy(
-		expandTimestamps($("#inputText").value, getTimestampDate()),
+		encodeIcons(expandTimestamps($("#inputText").value, getTimestampDate()), icons),
 		$("#inputFancy").value
 	);
 	const font = $("#inputFont").value;
@@ -192,19 +196,17 @@ const updateCanvasText = async (canvas) => {
 	ctx.rotate(Math.PI / 2);
 
 	ctx.fillStyle = "#000";
-	drawText(ctx, text, {
+	drawRichText(ctx, text, icons, {
 		x: -canvas.height / 2,
 		y: -canvas.width / 2,
 		width: canvas.height,
 		height: canvas.width,
-		font: [
+		font: `${fontStyle} ${fontWeight} ${fontSize}px ${[
 			cssFamily(font),
 			monoEmoji ? `"${MONO_EMOJI_FONT}"` : COLOR_EMOJI_FONTS,
 			"sans-serif",
-		].join(", "),
+		].join(", ")}`,
 		fontSize,
-		fontWeight,
-		fontStyle,
 		lineHeight: fontSize * lineHeight,
 		align: $("input[name=inputAlign]:checked").value,
 		vAlign: $("input[name=inputVAlign]:checked").value,
@@ -262,7 +264,19 @@ const setupTextDesigner = (canvas) => {
 	for (const style of FANCY_STYLES) $("#inputFancy").appendChild(new Option(style.label, style.id));
 
 	// Emoji picker
-	$("#emojiPicker").addEventListener("emoji-click", (e) => insertAtCursor(textarea, e.detail.unicode));
+	const picker = $("#emojiPicker");
+	picker.addEventListener("emoji-click", (e) =>
+		insertAtCursor(textarea, e.detail.unicode ?? `:${e.detail.name}:`)
+	);
+	// Custom emoji from icons/ get their own "Custom" section in the picker
+	iconsReady.then((icons) => {
+		picker.customEmoji = icons.map((icon) => ({
+			name: icon.name,
+			shortcodes: [icon.name],
+			url: icon.url,
+			category: "Custom",
+		}));
+	});
 
 	// Timestamp menu, with live examples refreshed each time it opens
 	const menu = $("#timestampMenu");
